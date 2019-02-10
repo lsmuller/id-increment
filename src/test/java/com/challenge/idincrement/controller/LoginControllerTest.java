@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -72,7 +72,7 @@ public class LoginControllerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		String userJson = mapper.writeValueAsString(user);
 
-		Mockito.doThrow(new InvalidRequestException("")).when(userRequestValidator).validateLoginData(Matchers.anyObject());
+		Mockito.doThrow(new InvalidRequestException("")).when(userRequestValidator).validateLoginData(ArgumentMatchers.any());
 		mvc.perform(post("/login").content(userJson).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 	}
 

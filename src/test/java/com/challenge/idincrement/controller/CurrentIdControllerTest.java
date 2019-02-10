@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CreateUserControllerTest {
+public class CurrentIdControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
@@ -40,48 +40,46 @@ public class CreateUserControllerTest {
 	private UserRequestValidator userRequestValidator;
 
 	@Test
-	public void createUserShouldReturnApiKeyWhenUserExists() throws Exception {
-		User user = new User("test@test.com", "1234", "User");
+	public void getCurrentIdShouldReturnApiKeyWhenUserExists() throws Exception {
 		ApiKey apiKey = new ApiKey("dGVzdEB0ZXN0LmNvbToxMjM0OlVzZXI=");
 		IdEntity idEntity = new IdEntity.Builder().withEmail("test@test.com").withPassword("1234").withTableName("User").withCurrentId(0).build();
 
 		ObjectMapper mapper = new ObjectMapper();
-		String userJson = mapper.writeValueAsString(user);
 		String apiKeyJson = mapper.writeValueAsString(apiKey);
 
-		Mockito.when(idRepository.save(ArgumentMatchers.any())).thenReturn(idEntity);
+		Mockito.when(idRepository.findOneById("dGVzdEB0ZXN0LmNvbToxMjM0OlVzZXI=")).thenReturn(idEntity);
 
-		mvc.perform(post("/new")
-							.content(userJson)
+		mvc.perform(post("/current")
+							.content(apiKeyJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isAccepted())
-				.andExpect(content().string(apiKeyJson));
+				.andExpect(content().string("0"));
 	}
 
 	@Test
-	public void createUserShouldReturnUnauthorizedWhenApiKeyNoteGeneratedProperly() throws Exception {
+	public void getCurrentIdShouldReturnUnauthorizedWhenApiKeyNotValid() throws Exception {
 		User user = new User("test_2@test.com", "9876", "Material");
-		IdEntity idEntity = new IdEntity.Builder().withApiKey(null).build();
+		IdEntity idEntity = new IdEntity.Builder().withApiKey("").build();
 
 		ObjectMapper mapper = new ObjectMapper();
 		String userJson = mapper.writeValueAsString(user);
 
-		Mockito.when(idRepository.save(ArgumentMatchers.any())).thenReturn(idEntity);
-		Mockito.doThrow(new UnauthorizedException("")).when(userRequestValidator).validateApiKey(idEntity.getApiKey());
+		Mockito.when(idRepository.findOneById(ArgumentMatchers.any())).thenReturn(idEntity);
+		Mockito.doThrow(new UnauthorizedException("")).when(userRequestValidator).validateIdEntity(idEntity);
 
-		mvc.perform(post("/new").content(userJson)
+		mvc.perform(post("/current").content(userJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	public void createUserShouldReturnBadRequestWhenRequestIsInvalid() throws Exception {
+	public void getCurrentIdShouldReturnBadRequestWhenRequestIsInvalid() throws Exception {
 		User user = new User("", "", "");
 		ObjectMapper mapper = new ObjectMapper();
 		String userJson = mapper.writeValueAsString(user);
 
-		Mockito.doThrow(new InvalidRequestException("")).when(userRequestValidator).validateLoginData(ArgumentMatchers.any());
-		mvc.perform(post("/new").content(userJson)
+		Mockito.doThrow(new InvalidRequestException("")).when(userRequestValidator).validateApiKey(ArgumentMatchers.any());
+		mvc.perform(post("/current").content(userJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 	}
