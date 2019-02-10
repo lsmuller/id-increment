@@ -15,7 +15,7 @@ public class UserRequestValidator {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-	public void validateLoginData(User user) {
+	public void validateLoginData(User user) throws InvalidRequestException{
 		logger.info("Validating user input {}", user);
 		if (Objects.isNull(user) || isNullOrBlank(user.getEmail()) || isNullOrBlank(user.getPassword()) || isNullOrBlank(user.getTableName())){
 			logger.error("User input is invalid");
@@ -23,7 +23,7 @@ public class UserRequestValidator {
 		}
 	}
 
-	public void validateApiKey(String apiKey) {
+	public void validateApiKey(String apiKey) throws UnauthorizedException{
 		logger.info("Validating Api Key: {}", apiKey);
 		if (Objects.isNull(apiKey) || apiKey.isEmpty()) {
 			throw new UnauthorizedException("User not found for apiKey " + apiKey + "!");

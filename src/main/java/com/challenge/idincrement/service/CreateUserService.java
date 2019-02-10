@@ -29,10 +29,10 @@ public class CreateUserService {
 	public ApiKey createUser(User user) {
 		userRequestValidator.validateLoginData(user);
 		logger.info("Creating user {}", user.getEmail());
-		IdEntity entity = new IdEntity.Builder().withEmail(user.getEmail()).withPassword(user.getPassword()).withTableName(user.getTableName()).withCurrentId(0).build();
-		entity = idEntityRepository.save(entity);
-		userRequestValidator.validateApiKey(entity.getApiKey());
-		return new ApiKey(entity.getApiKey());
+		IdEntity idEntity = new IdEntity.Builder().withEmail(user.getEmail()).withPassword(user.getPassword()).withTableName(user.getTableName()).withCurrentId(0).build();
+		idEntity = idEntityRepository.save(idEntity);
+		userRequestValidator.validateApiKey(idEntity.getApiKey());
+		return new ApiKey(idEntity.getApiKey());
 	}
 
 }

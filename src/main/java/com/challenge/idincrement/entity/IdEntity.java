@@ -16,10 +16,16 @@ public class IdEntity {
 	private Integer currentId;
 
 	public static class Builder {
+		private String apiKey;
 		private String email;
 		private String password;
 		private String tableName;
 		private Integer currentId;
+
+		public Builder withApiKey(String apiKey) {
+			this.apiKey = apiKey;
+			return this;
+		}
 
 		public Builder withEmail(String email) {
 			this.email = email;
@@ -44,11 +50,12 @@ public class IdEntity {
 
 		public IdEntity build(){
 			IdEntity idEntity = new IdEntity();
+			idEntity.apiKey = this.apiKey;
 			idEntity.email = this.email;
 			idEntity.password = this.password;
 			idEntity.currentId = this.currentId != null ? this.currentId : 0;
 			idEntity.tableName = this.tableName;
-			idEntity.apiKey  = Base64.encodeBase64String((this.email + ":" + password + ":" + tableName).getBytes());
+			idEntity.apiKey  = this.apiKey != null ? this.apiKey : Base64.encodeBase64String((this.email + ":" + password + ":" + tableName).getBytes());
 			return idEntity;
 		}
 
