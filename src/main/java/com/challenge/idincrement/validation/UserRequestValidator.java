@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.challenge.idincrement.exception.InvalidRequestException;
+import com.challenge.idincrement.exception.UnauthorizedException;
 import com.challenge.idincrement.model.User;
 
 @Component
@@ -19,6 +20,13 @@ public class UserRequestValidator {
 		if (Objects.isNull(user) || isNullOrBlank(user.getEmail()) || isNullOrBlank(user.getPassword()) || isNullOrBlank(user.getTableName())){
 			logger.error("User input is invalid");
 			throw new InvalidRequestException("Fields e-mail, password and table name are mandatory");
+		}
+	}
+
+	public void validateApiKey(String apiKey) {
+		logger.info("Validating Api Key: {}", apiKey);
+		if (Objects.isNull(apiKey) || apiKey.isEmpty()) {
+			throw new UnauthorizedException("User not found for apiKey " + apiKey + "!");
 		}
 	}
 
