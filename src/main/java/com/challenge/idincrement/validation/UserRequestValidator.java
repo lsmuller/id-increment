@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.challenge.idincrement.entity.IdEntity;
 import com.challenge.idincrement.exception.InvalidRequestException;
 import com.challenge.idincrement.exception.UnauthorizedException;
 import com.challenge.idincrement.model.User;
@@ -27,6 +28,13 @@ public class UserRequestValidator {
 		logger.info("Validating Api Key: {}", apiKey);
 		if (Objects.isNull(apiKey) || apiKey.isEmpty()) {
 			throw new UnauthorizedException("User not found for apiKey " + apiKey + "!");
+		}
+	}
+
+	public void validateIdEntity(IdEntity idEntity) throws UnauthorizedException{
+		logger.info("Validating database record: {}", idEntity);
+		if (Objects.isNull(idEntity) || isNullOrBlank(idEntity.getApiKey())) {
+			throw new UnauthorizedException("User not found!");
 		}
 	}
 
