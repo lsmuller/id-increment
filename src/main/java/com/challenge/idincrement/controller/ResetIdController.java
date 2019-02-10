@@ -13,7 +13,8 @@ import com.challenge.idincrement.model.ApiKey;
 import com.challenge.idincrement.service.ResetIdService;
 
 @RestController
-@RequestMapping("/reset")
+@RequestMapping(Paths.PATH_VERSION + Paths.PATH_RESET)
+
 public class ResetIdController {
 
 	private ResetIdService resetIdService;

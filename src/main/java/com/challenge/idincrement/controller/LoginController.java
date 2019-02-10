@@ -13,7 +13,7 @@ import com.challenge.idincrement.model.User;
 import com.challenge.idincrement.service.LoginService;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping(Paths.PATH_VERSION + Paths.PATH_LOGIN)
 public class LoginController {
 
 	private LoginService loginService;

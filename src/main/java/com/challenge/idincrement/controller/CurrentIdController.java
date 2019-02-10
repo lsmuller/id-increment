@@ -12,7 +12,7 @@ import com.challenge.idincrement.model.ApiKey;
 import com.challenge.idincrement.service.CurrentIdService;
 
 @RestController
-@RequestMapping("/current")
+@RequestMapping(Paths.PATH_VERSION + Paths.PATH_CURRENT)
 public class CurrentIdController {
 
 	private CurrentIdService currentIdService;

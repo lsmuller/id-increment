@@ -12,7 +12,7 @@ import com.challenge.idincrement.model.ApiKey;
 import com.challenge.idincrement.service.NextIdService;
 
 @RestController
-@RequestMapping("/next")
+@RequestMapping(Paths.PATH_VERSION + Paths.PATH_NEXT)
 public class NextIdController {
 
 	private NextIdService nextIdService;

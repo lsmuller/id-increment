@@ -13,7 +13,7 @@ import com.challenge.idincrement.model.User;
 import com.challenge.idincrement.service.CreateUserService;
 
 @RestController
-@RequestMapping("/new")
+@RequestMapping(Paths.PATH_VERSION + Paths.PATH_NEW)
 public class CreateUserController {
 
 	private CreateUserService createUserService;
