@@ -1,6 +1,6 @@
 package com.challenge.idincrement.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class NextIdControllerTest {
+public class ResetIdControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
@@ -40,7 +40,7 @@ public class NextIdControllerTest {
 	private UserRequestValidator userRequestValidator;
 
 	@Test
-	public void getNextIdShouldReturnApiKeyWhenUserExists() throws Exception {
+	public void resetIdShouldReturnApiKeyWhenUserExists() throws Exception {
 		ApiKey apiKey = new ApiKey("dGVzdEB0ZXN0LmNvbToxMjM0OlVzZXI=");
 		IdEntity idEntity = new IdEntity.Builder().withEmail("test@test.com").withPassword("1234").withTableName("User").withCurrentId(0).build();
 
@@ -50,15 +50,15 @@ public class NextIdControllerTest {
 		Mockito.when(idRepository.findOneByApiKey("dGVzdEB0ZXN0LmNvbToxMjM0OlVzZXI=")).thenReturn(idEntity);
 		Mockito.when(idRepository.save(idEntity)).thenReturn(idEntity);
 
-		mvc.perform(post("/next")
+		mvc.perform(put("/reset?newId=5")
 							.content(apiKeyJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isAccepted())
-				.andExpect(content().string("1"));
+				.andExpect(content().string("5"));
 	}
 
 	@Test
-	public void getNextIdShouldReturnUnauthorizedWhenApiKeyNotValid() throws Exception {
+	public void resetIdShouldReturnUnauthorizedWhenApiKeyNotValid() throws Exception {
 		User user = new User("test_2@test.com", "9876", "Material");
 		IdEntity idEntity = new IdEntity.Builder().withApiKey("").build();
 
@@ -68,19 +68,19 @@ public class NextIdControllerTest {
 		Mockito.when(idRepository.findOneByApiKey(ArgumentMatchers.any())).thenReturn(idEntity);
 		Mockito.doThrow(new UnauthorizedException("")).when(userRequestValidator).validateIdEntity(idEntity);
 
-		mvc.perform(post("/next").content(userJson)
+		mvc.perform(put("/reset?newId=3").content(userJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 	}
 
 	@Test
-	public void getNextIdShouldReturnBadRequestWhenRequestIsInvalid() throws Exception {
+	public void resetIdShouldReturnBadRequestWhenRequestIsInvalid() throws Exception {
 		User user = new User("", "", "");
 		ObjectMapper mapper = new ObjectMapper();
 		String userJson = mapper.writeValueAsString(user);
 
 		Mockito.doThrow(new InvalidRequestException("")).when(userRequestValidator).validateApiKey(ArgumentMatchers.any());
-		mvc.perform(post("/next").content(userJson)
+		mvc.perform(put("/reset?newId=6").content(userJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 	}

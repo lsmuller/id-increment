@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -31,6 +32,13 @@ public class GlobalControllerExceptionHandler {
 		logger.error("{}", e.getMessage(), e);
 		ExceptionReturnMessage exceptionReturnMessage = new ExceptionReturnMessage(HttpStatus.UNAUTHORIZED, e, e.getMessage(), request);
 		return new ResponseEntity<>(exceptionReturnMessage, new HttpHeaders(), HttpStatus.UNAUTHORIZED);
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ExceptionReturnMessage> handleHttpMessageNotReadableException(HttpServletRequest request, Exception e) {
+		logger.error("There are issues with the informed request structure, {}", e.getMessage(), e);
+		ExceptionReturnMessage exceptionReturnMessage = new ExceptionReturnMessage(HttpStatus.BAD_REQUEST, e, e.getMessage(), request);
+		return new ResponseEntity<>(exceptionReturnMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(Exception.class)

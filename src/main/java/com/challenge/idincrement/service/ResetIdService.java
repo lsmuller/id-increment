@@ -11,7 +11,7 @@ import com.challenge.idincrement.repository.IdEntityRepository;
 import com.challenge.idincrement.validation.UserRequestValidator;
 
 @Service
-public class CurrentIdService {
+public class ResetIdService {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
@@ -20,18 +20,20 @@ public class CurrentIdService {
 	private UserRequestValidator userRequestValidator;
 
 	@Autowired
-	public CurrentIdService(IdEntityRepository idEntityRepository, UserRequestValidator userRequestValidator) {
+	public ResetIdService(IdEntityRepository idEntityRepository, UserRequestValidator userRequestValidator) {
 		this.idEntityRepository = idEntityRepository;
 		this.userRequestValidator = userRequestValidator;
 	}
 
-	public Integer getCurrentId(ApiKey apiKey) {
+	public Integer resetId(ApiKey apiKey, Integer newId) {
 		userRequestValidator.validateApiKey(apiKey.getApiKey());
+		userRequestValidator.validateNewId(newId);
 		IdEntity idEntity = idEntityRepository.findOneByApiKey(apiKey.getApiKey());
 		logger.info("Entity found: {}", idEntity);
 		userRequestValidator.validateIdEntity(idEntity);
-		logger.info("Integer {} will be returned as current for ApiKey {}", idEntity.getCurrentId(), apiKey);
-		return idEntity.getCurrentId();
+		idEntity.setCurrentId(newId);
+		logger.info("Integer {} will be reset as current for ApiKey {}", newId, apiKey);
+		return idEntityRepository.save(idEntity).getCurrentId();
 	}
 
 }

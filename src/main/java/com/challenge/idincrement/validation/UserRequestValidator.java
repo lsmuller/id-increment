@@ -38,6 +38,13 @@ public class UserRequestValidator {
 		}
 	}
 
+	public void validateNewId(Integer newId) throws UnauthorizedException{
+		logger.info("Validating provided value for new id: ", newId);
+		if (Objects.isNull(newId)) {
+			throw new InvalidRequestException("Field newId must be informed!");
+		}
+	}
+
 	private boolean isNullOrBlank(String param) {
 		return param == null || param.trim().length() == 0;
 	}

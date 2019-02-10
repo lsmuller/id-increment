@@ -28,6 +28,7 @@ public class NextIdService {
 	public Integer getNextId(ApiKey apiKey) {
 		userRequestValidator.validateApiKey(apiKey.getApiKey());
 		IdEntity idEntity = idEntityRepository.findOneByApiKey(apiKey.getApiKey());
+		logger.info("Entity found: {}", idEntity);
 		userRequestValidator.validateIdEntity(idEntity);
 		Integer current = idEntity.getCurrentId();
 		idEntity.setCurrentId(++current);
