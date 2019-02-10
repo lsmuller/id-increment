@@ -9,5 +9,5 @@ import com.challenge.idincrement.entity.IdEntity;
 public interface IdEntityRepository extends JpaRepository<IdEntity, String> {
 
 	@Query("SELECT apiKey FROM IdEntity AS ie where ie.email = :email and ie.password = :password and ie.tableName = :tableName")
-	String findApiKeyByEmailPasswordAndTableName(@Param("email") String email, @Param("password") String password, @Param("tableName") String tableName);
+	String findApiKeyByEmailPasswordTablename(@Param("email") String email, @Param("password") String password, @Param("tableName") String tableName);
 }

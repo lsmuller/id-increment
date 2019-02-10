@@ -40,7 +40,7 @@ public class LoginControllerTest {
 		String userJson = mapper.writeValueAsString(user);
 		String apiKeyJson = mapper.writeValueAsString(apiKey);
 
-		Mockito.when(idRepository.findApiKeyByEmailPasswordAndTableName(user.getEmail(), user.getPassword(), user.getTableName())).thenReturn(apiKey.getApiKey());
+		Mockito.when(idRepository.findApiKeyByEmailPasswordTablename(user.getEmail(), user.getPassword(), user.getTableName())).thenReturn(apiKey.getApiKey());
 
 		mvc.perform(post("/login").content(userJson).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isAccepted()).andExpect(content().string(apiKeyJson));
 	}
@@ -54,21 +54,7 @@ public class LoginControllerTest {
 		String userJson = mapper.writeValueAsString(user);
 		String apiKeyJson = mapper.writeValueAsString(apiKey);
 
-		Mockito.when(idRepository.findApiKeyByEmailPasswordAndTableName(user.getEmail(), user.getPassword(), user.getTableName())).thenReturn(apiKey.getApiKey());
-
-		mvc.perform(post("/login").content(userJson).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized()).andExpect(content().string(apiKeyJson));
-	}
-
-	@Test
-	public void loginShouldReturnUnauthorizedWhenUserIsInvalid() throws Exception {
-		User user = new User();
-		ApiKey apiKey = new ApiKey();
-
-		ObjectMapper mapper = new ObjectMapper();
-		String userJson = mapper.writeValueAsString(user);
-		String apiKeyJson = mapper.writeValueAsString(apiKey);
-
-		Mockito.when(idRepository.findApiKeyByEmailPasswordAndTableName(user.getEmail(), user.getPassword(), user.getTableName())).thenReturn(apiKey.getApiKey());
+		Mockito.when(idRepository.findApiKeyByEmailPasswordTablename(user.getEmail(), user.getPassword(), user.getTableName())).thenReturn(apiKey.getApiKey());
 
 		mvc.perform(post("/login").content(userJson).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized()).andExpect(content().string(apiKeyJson));
 	}

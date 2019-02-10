@@ -28,7 +28,7 @@ public class LoginService {
 	public ApiKey login(User user) {
 		userRequestValidator.validateLoginData(user);
 		logger.info("Trying to log user {}", user.getEmail());
-		ApiKey apiKey = new ApiKey(idEntityRepository.findApiKeyByEmailPasswordAndTableName(user.getEmail(), user.getPassword(), user.getTableName()));
+		ApiKey apiKey = new ApiKey(idEntityRepository.findApiKeyByEmailPasswordTablename(user.getEmail(), user.getPassword(), user.getTableName()));
 		userRequestValidator.validateApiKey(apiKey.getApiKey());
 		return apiKey;
 	}
