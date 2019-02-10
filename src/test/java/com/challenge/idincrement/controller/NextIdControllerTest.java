@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CurrentIdControllerTest {
+public class NextIdControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
@@ -48,12 +48,13 @@ public class CurrentIdControllerTest {
 		String apiKeyJson = mapper.writeValueAsString(apiKey);
 
 		Mockito.when(idRepository.findOneByApiKey("dGVzdEB0ZXN0LmNvbToxMjM0OlVzZXI=")).thenReturn(idEntity);
+		Mockito.when(idRepository.save(idEntity)).thenReturn(idEntity);
 
-		mvc.perform(post("/current")
+		mvc.perform(post("/next")
 							.content(apiKeyJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isAccepted())
-				.andExpect(content().string("0"));
+				.andExpect(content().string("1"));
 	}
 
 	@Test
@@ -67,7 +68,7 @@ public class CurrentIdControllerTest {
 		Mockito.when(idRepository.findOneByApiKey(ArgumentMatchers.any())).thenReturn(idEntity);
 		Mockito.doThrow(new UnauthorizedException("")).when(userRequestValidator).validateIdEntity(idEntity);
 
-		mvc.perform(post("/current").content(userJson)
+		mvc.perform(post("/next").content(userJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isUnauthorized());
 	}
@@ -79,7 +80,7 @@ public class CurrentIdControllerTest {
 		String userJson = mapper.writeValueAsString(user);
 
 		Mockito.doThrow(new InvalidRequestException("")).when(userRequestValidator).validateApiKey(ArgumentMatchers.any());
-		mvc.perform(post("/current").content(userJson)
+		mvc.perform(post("/next").content(userJson)
 							.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isBadRequest());
 	}
